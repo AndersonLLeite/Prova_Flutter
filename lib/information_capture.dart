@@ -31,6 +31,13 @@ class _InformationCaptureState extends State<InformationCapture> {
   }
 
   @override
+  void dispose() {
+    _textEditingController.dispose();
+    _textFocus.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: GestureDetector(
