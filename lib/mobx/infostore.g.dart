@@ -51,6 +51,17 @@ mixin _$InfoStore on _InfoStore, Store {
   }
 
   @override
+  dynamic updateInfo(int index, String newInfo) {
+    final _$actionInfo =
+        _$_InfoStoreActionController.startAction(name: '_InfoStore.updateInfo');
+    try {
+      return super.updateInfo(index, newInfo);
+    } finally {
+      _$_InfoStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 

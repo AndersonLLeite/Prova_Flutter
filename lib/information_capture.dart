@@ -1,12 +1,13 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:prova_flutter/models/infostore.dart';
 import 'package:prova_flutter/ui/styles/colors_app.dart';
 import 'package:prova_flutter/ui/styles/text_styles.dart';
 import 'package:prova_flutter/ui/widgets/card_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:validatorless/validatorless.dart';
+
+import 'mobx/infostore.dart';
 
 class InformationCapture extends StatefulWidget {
   const InformationCapture({Key? key}) : super(key: key);

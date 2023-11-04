@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:prova_flutter/ui/styles/custom_icons.dart';
 import 'package:prova_flutter/ui/styles/text_styles.dart';
 
-class CardWidget extends StatelessWidget {
+class CardWidget extends StatefulWidget {
   final int index;
   final int editingIndex;
   final String info;
@@ -23,6 +23,19 @@ class CardWidget extends StatelessWidget {
       : super(key: key);
 
   @override
+  State<CardWidget> createState() => _CardWidgetState();
+}
+
+class _CardWidgetState extends State<CardWidget> {
+  final TextEditingController controller = TextEditingController();
+
+  @override
+  void initState() {
+    controller.text = widget.info;
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Form(
       child: Column(
@@ -34,50 +47,50 @@ class CardWidget extends StatelessWidget {
               ),
             ),
             title: Center(
-              child: isEditing
-                  ? index == editingIndex
-                      ? TextFormField(
-                          controller: TextEditingController(text: info),
-                          decoration: const InputDecoration(
-                            border: InputBorder.none,
-                          ),
-                          onFieldSubmitted: (value) {
-                            onEdited(value);
-                          },
-                        )
-                      : Text(info,
-                          style: context.textStyles.textPrimaryFontBold)
-                  : Text(info, style: context.textStyles.textPrimaryFontBold),
-            ),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                !isEditing
-                    ? IconButton(
-                        onPressed: onEdit,
+                child: widget.isEditing && widget.index == widget.editingIndex
+                    ? TextFormField(
+                        maxLines: 4,
+                        controller: controller,
+                        decoration: const InputDecoration(
+                          border: InputBorder.none,
+                        ),
+                        onFieldSubmitted: (value) {
+                          widget.onEdited(value);
+                        },
+                      )
+                    : Text(widget.info,
+                        style: context.textStyles.textPrimaryFontBold)),
+            trailing: widget.isEditing && widget.index == widget.editingIndex
+                ? IconButton(
+                    onPressed: () {
+                      widget.onEdited(controller.text);
+                    },
+                    icon: const Icon(
+                      Icons.check,
+                      color: Colors.green,
+                    ),
+                  )
+                : Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        onPressed: widget.onEdit,
                         icon: const Icon(
                           MyCustomIcons.edit,
                           color: Colors.black,
                         ),
-                      )
-                    : IconButton(
-                        onPressed: () {
-                          onEdited(info);
-                        },
-                        icon: const Icon(
-                          Icons.check,
-                          color: Colors.green,
-                        ),
                       ),
-                IconButton(
-                  onPressed: onDelete,
-                  icon: const Icon(
-                    MyCustomIcons.delete,
-                    color: Colors.red,
+                      !widget.isEditing
+                          ? IconButton(
+                              onPressed: widget.onDelete,
+                              icon: const Icon(
+                                MyCustomIcons.delete,
+                                color: Colors.red,
+                              ),
+                            )
+                          : const SizedBox()
+                    ],
                   ),
-                ),
-              ],
-            ),
           ),
           const Divider(),
         ],
