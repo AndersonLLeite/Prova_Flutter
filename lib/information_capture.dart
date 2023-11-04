@@ -56,102 +56,118 @@ class _InformationCaptureState extends State<InformationCapture> {
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter),
             ),
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(28.0),
-                  child: SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.5,
-                    child: Card(
-                      child: Observer(
-                        builder: (_) {
-                          return ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: infoStore.infoList.length,
-                            itemBuilder: (_, index) {
-                              return CardWidget(
-                                info: infoStore.infoList[index],
-                                isEditing: isEditing,
-                                index: index,
-                                editingIndex: editingIndex,
-                                onEdit: () {
-                                  setState(() {
-                                    isEditing = true;
-                                    editingIndex = index;
-                                  });
-                                },
-                                onEdited: (value) {
-                                  setState(() {
-                                    isEditing = false;
-                                    editingIndex = -1;
-                                  });
-                                  infoStore.updateInfo(index, value);
-                                  _textFocus.requestFocus();
-                                },
-                                onDelete: () {
-                                  showDeleteConfirmationDialog(index);
-                                  _textFocus.requestFocus();
-                                },
-                              );
-                            },
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: TextFormField(
-                            focusNode: _textFocus,
-                            autofocus: true,
-                            controller: _textEditingController,
-                            decoration: InputDecoration(
-                              labelText: 'Digite seu texto',
-                              labelStyle:
-                                  context.textStyles.textPrimaryFontBold,
-                              border: const OutlineInputBorder(),
+            child: CustomScrollView(
+              slivers: [
+                SliverList(
+                    delegate: SliverChildListDelegate.fixed([
+                  Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            top: 50.0, bottom: 30.0, left: 28.0, right: 28.0),
+                        child: SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.5,
+                          child: Card(
+                            child: Observer(
+                              builder: (_) {
+                                return ListView.builder(
+                                  shrinkWrap: true,
+                                  itemCount: infoStore.infoList.length,
+                                  itemBuilder: (_, index) {
+                                    return CardWidget(
+                                      info: infoStore.infoList[index],
+                                      isEditing: isEditing,
+                                      index: index,
+                                      editingIndex: editingIndex,
+                                      onEdit: () {
+                                        setState(() {
+                                          isEditing = true;
+                                          editingIndex = index;
+                                        });
+                                      },
+                                      onEdited: (value) {
+                                        setState(() {
+                                          isEditing = false;
+                                          editingIndex = -1;
+                                        });
+                                        infoStore.updateInfo(index, value);
+                                        _textFocus.requestFocus();
+                                      },
+                                      onDelete: () {
+                                        showDeleteConfirmationDialog(index);
+                                        _textFocus.requestFocus();
+                                      },
+                                    );
+                                  },
+                                );
+                              },
                             ),
-                            validator:
-                                Validatorless.required('Não pode ser vazio'),
-                            onFieldSubmitted: (value) {
-                              if (formKey.currentState!.validate()) {
-                                if (isEditing) {
-                                  infoStore.updateInfo(editingIndex, value);
-                                } else {
-                                  infoStore.addInfo(value);
-                                }
-                                _textEditingController.clear();
-                                setState(() {
-                                  isEditing = false;
-                                  editingIndex = -1;
-                                });
-                              }
-                              _textFocus.requestFocus();
-                            },
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: TextFormField(
+                                  focusNode: _textFocus,
+                                  autofocus: true,
+                                  controller: _textEditingController,
+                                  decoration: InputDecoration(
+                                    labelText: 'Digite seu texto',
+                                    labelStyle:
+                                        context.textStyles.textPrimaryFontBold,
+                                    border: const OutlineInputBorder(),
+                                  ),
+                                  validator: Validatorless.required(
+                                      'Não pode ser vazio'),
+                                  onFieldSubmitted: (value) {
+                                    if (formKey.currentState!.validate()) {
+                                      if (isEditing) {
+                                        infoStore.updateInfo(
+                                            editingIndex, value);
+                                      } else {
+                                        infoStore.addInfo(value);
+                                      }
+                                      _textEditingController.clear();
+                                      setState(() {
+                                        isEditing = false;
+                                        editingIndex = -1;
+                                      });
+                                    }
+                                    _textFocus.requestFocus();
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-                const Spacer(),
-                Text.rich(
-                  TextSpan(
-                    text: 'Política de Privacidade',
-                    style: context.textStyles.textSecondaryFontItalic
-                        .copyWith(color: context.colors.greyDart),
-                    recognizer: TapGestureRecognizer()
-                      ..onTap = () => _launchUrl(),
+                ])),
+                SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: Column(
+                    children: [
+                      const Spacer(),
+                      Text.rich(
+                        TextSpan(
+                          text: 'Política de Privacidade',
+                          style: context.textStyles.textSecondaryFontItalic
+                              .copyWith(color: context.colors.greyDart),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () => _launchUrl(),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                    ],
                   ),
-                ),
-                const SizedBox(
-                  height: 20,
                 ),
               ],
             ),
